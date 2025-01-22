@@ -19,7 +19,7 @@ class EmployeeController extends Controller
         $search = $request->input('search');
         $status = $request->input('status');
         $division = $request->input('division');
-        $items = $request->items ?? 10;
+        $items = $request->items ?? 5;
 
         $query = DB::table('employees')
             ->join('jobs', 'employees.job_id', '=', 'jobs.id')
@@ -28,7 +28,7 @@ class EmployeeController extends Controller
                 'employees.id',
                 'employees.name',
                 'employees.status',
-                'divisions.name',
+                'divisions.name as divisi_name',
                 'jobs.title as job_name',
                 'employees.created_at',
                 'employees.updated_at'
@@ -45,7 +45,7 @@ class EmployeeController extends Controller
         }
 
         if ($division) {
-            $query->where('divisions.id', $division);
+            $query->where('divisions.name', 'like', "%{$division}%");
         }
 
         $employees = $query->paginate($items);
